@@ -1,0 +1,107 @@
+# UE4 project ignore file
+# Designed to protect from commiting blobs without them being managed by git-lfs
+# Based on: https://github.com/MOZGIII/ue4-gitignore/blob/master/.gitignore
+
+################################################
+# Ignore all files by default, but scan all directories
+*
+!*/
+
+# Allow git files and other utility files in the the repo root
+!/.git*
+!/*.editorconfig
+!/readme.md
+!/LICENSE
+
+################################################
+# Allow UE4 project files and folders
+!/Config/**
+!/Source/**
+!/*.uproject
+
+################################################
+# Ignore IDE and development-only files in allowed folders
+*.slo
+*.lo
+*.o
+*.[Oo]bj
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.mod
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
+*.ipa
+*.xcodeproj
+*.xcworkspace
+*.sln
+*.suo
+*.opensdf
+*.sbr
+*.sdf
+*.VC.db
+*.VC.opendb
+*.user
+*.aps
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.tlb
+*.tlh
+*.ilk
+*.[Cc]ache
+*.sublime-project
+*.sublime-workspace
+ipch/
+obj/
+.vs/
+[Uu]pgrade[Ll]og.[Xx][Mm][Ll]
+_[Uu]pgradeReport_[Ff]iles/
+_ReSharper*/
+*.resharper
+~$*
+
+*.bak
+*.log
+*.env
+*.ffs_db
+
+################################################
+# Ignore junk files in allowed folders
+# Windows
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Mac OS X
+[Tt]humbs.db
+.DS_Store?
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+
+################################################
+# Allow only specific binary files tracked by git-lfs
+# Don't forget to track other files in .gitattributes when adding them here!
+!/Build/**/*.ico
+!/Build/**/*.icns
+!/Content/**/*.umap
+!/Content/**/*.uasset
+!/Content/**/*.mp4
+!/Content/**/*.locres
+!/Content/**/*.locmeta
+!/Content/**/*.archive
+!/Resources/*.png

@@ -1,0 +1,21 @@
+# Text files
+*.cpp text diff=cpp
+*.h text diff=cpp
+*.cs text diff=csharp
+*.uplugin text
+*.ini text
+*.editorconfig text
+*.git* text eol=lf
+*.sh text eol=lf
+
+# Use Git LFS for binary files
+*.umap filter=lfs diff=lfs merge=lfs -text
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.ico filter=lfs diff=lfs merge=lfs -text
+*.icns filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.locres filter=lfs diff=lfs merge=lfs -text
+*.locmeta filter=lfs diff=lfs merge=lfs -text
+*.archive filter=lfs diff=lfs merge=lfs -text
