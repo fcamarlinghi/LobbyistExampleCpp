@@ -11,6 +11,9 @@ class UExMainMenuTabInterface : public UInterface
 	GENERATED_BODY()
 };
 
+/**
+ * Implemented by main menu tabs to receive notifications from the parent widget.
+ */
 class IExMainMenuTabInterface
 {
 	GENERATED_BODY()

@@ -2,8 +2,8 @@
 
 #include "Menu/ExLobbyHost.h"
 #include "Menu/ExLobbyClient.h"
-#include "ExGameInstance.h"
 #include "ExCharacterSkin.h"
+#include "ExGameInstance.h"
 #include "LobbyistClient.h"
 #include "LobbyistGlobals.h"
 #include "LobbyistState.h"
@@ -13,7 +13,9 @@
 
 AExLobbyHost::AExLobbyHost(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-{}
+{
+	LobbyPlayerClass = AExLobbyPlayer::StaticClass();
+}
 
 void AExLobbyHost::ProcessKickRequest(AExLobbyPlayer* KickInstigator, AExLobbyPlayer* PlayerToKick)
 {

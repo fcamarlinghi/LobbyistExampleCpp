@@ -8,7 +8,7 @@ AExLobbyClient::AExLobbyClient(const FObjectInitializer& ObjectInitializer)
 
 void AExLobbyClient::ClientReceiveChatMessage_Implementation(const FString& Message)
 {
-	OnMessageReceived(FText::AsCultureInvariant(Message), false);
+	ChatMessageReceivedEvent.Broadcast(FText::AsCultureInvariant(Message), false);
 }
 
 void AExLobbyClient::ClientReceiveJoinMessage_Implementation(const FString& NewPlayerName)
@@ -16,7 +16,7 @@ void AExLobbyClient::ClientReceiveJoinMessage_Implementation(const FString& NewP
 	FFormatNamedArguments Args;
 	Args.Add(TEXT("PlayerName"), FText::AsCultureInvariant(NewPlayerName));
 
-	OnMessageReceived(
+	ChatMessageReceivedEvent.Broadcast(
 		FText::Format(NSLOCTEXT("Lobby", "PlayerJoinedFormat", "{PlayerName} joined!"), Args),
 		true
 	);
@@ -27,13 +27,8 @@ void AExLobbyClient::ClientReceiveLeaveMessage_Implementation(const FString& Lea
 	FFormatNamedArguments Args;
 	Args.Add(TEXT("PlayerName"), FText::AsCultureInvariant(LeavingPlayerName));
 
-	OnMessageReceived(
+	ChatMessageReceivedEvent.Broadcast(
 		FText::Format(NSLOCTEXT("Lobby", "PlayerLeftFormat", "{PlayerName} left."), Args),
 		true
 	);
-}
-
-void AExLobbyClient::OnMessageReceived(const FText& Message, bool bSystemMessage)
-{
-	// TODO
 }

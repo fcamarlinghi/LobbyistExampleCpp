@@ -23,13 +23,14 @@ public:
 
 	UExMainMenu(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	/** . */
+protected:
+
 	UPROPERTY(BlueprintReadOnly, Meta = (BindWidget))
 	UWidgetSwitcher* LayoutSwitcher = nullptr;
 
 public:
 
-	/** . */
+	/** Changes the active tab. */
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
 	void SetActiveTab(EExMainMenuTab NewTab);
 };

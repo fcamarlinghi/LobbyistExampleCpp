@@ -23,9 +23,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Player Entry")
 	int32 Index = INDEX_NONE;
 
-	/** . */
+	/** Player represented by this entry. */
 	UPROPERTY(BlueprintReadOnly, Category = "Player Entry")
-	AExLobbyPlayer* Player = nullptr;
+	TWeakObjectPtr<AExLobbyPlayer> Player;
 
 };
 
@@ -49,10 +49,13 @@ protected:
 	UTextBlock* PlayerNameTextBlock = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (BindWidget))
-	UTextBlock* PingTextBlock = nullptr;
+	UPanelWidget* LeaderBox = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (BindWidget))
-	UPanelWidget* LeaderBox = nullptr;
+	UImage* SeparatorImage = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Meta = (BindWidget))
+	UTextBlock* PingTextBlock = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (BindWidget))
 	UButton* KickButton = nullptr;
@@ -71,7 +74,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "User Interface")
 	UExLobbyPlayerEntryData* GetEntryData() const;
 
-protected:
+private:
 
 	/** Gets the ping text. */
 	UFUNCTION()
@@ -80,8 +83,6 @@ protected:
 	/** Gets the selected skin color. */
 	UFUNCTION()
 	FLinearColor GetSkinColor();
-
-private:
 
 	/** Called when the kick button is clicked. */
 	UFUNCTION()

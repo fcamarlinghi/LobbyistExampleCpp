@@ -16,6 +16,17 @@ public:
 
 public:
 
+	/** Broadcasts whenever a new chat message is received. */
+	DECLARE_EVENT_TwoParams(AExLobbyClient, FOnChatMessageReceived, const FText& /* Message */, bool /* bSystemMessage */)
+	FOnChatMessageReceived& OnChatMessageReceived() { return ChatMessageReceivedEvent; }
+
+private:
+
+	/** Broadcasts whenever a new chat message is received. */
+	FOnChatMessageReceived ChatMessageReceivedEvent;
+
+public:
+
 	/** Replicates a chat message. */
 	UFUNCTION(Client, Reliable)
 	void ClientReceiveChatMessage(const FString& Message);
@@ -30,9 +41,4 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ClientReceiveLeaveMessage(const FString& LeavingPlayerName);
 	virtual void ClientReceiveLeaveMessage_Implementation(const FString& LeavingPlayerName);
-
-protected:
-
-	/** Called when a chat message is received. */
-	void OnMessageReceived(const FText& Message, bool bSystemMessage);
 };

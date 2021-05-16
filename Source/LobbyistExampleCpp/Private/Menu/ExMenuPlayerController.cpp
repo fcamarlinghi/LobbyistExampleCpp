@@ -68,7 +68,7 @@ UExWaitingDialog* AExMenuPlayerController::ShowWaitingDialog(const FText& Messag
 UExNotificationDialog* AExMenuPlayerController::ShowNotificationDialog(const FText& Message)
 {
 	CloseDialog();
-	UExNotificationDialog* NewDialog = CreateWidget<UExNotificationDialog>(this, WaitingDialogWidgetClass);
+	UExNotificationDialog* NewDialog = CreateWidget<UExNotificationDialog>(this, NotificationDialogWidgetClass);
 	if (NewDialog != nullptr)
 	{
 		DialogWidget = NewDialog;
@@ -254,7 +254,6 @@ void AExMenuPlayerController::OnConnectedToLobby()
 	{
 		MenuWidget->SetActiveTab(EExMainMenuTab::Lobby);
 	}
-	// TODO: update active session in game instance
 }
 
 void AExMenuPlayerController::OnLobbyNetworkFailure(const ENetworkFailure::Type FailureType)
@@ -292,8 +291,8 @@ void AExMenuPlayerController::OnLobbyNetworkFailure(const ENetworkFailure::Type 
 
 void AExMenuPlayerController::OnDisconnectedFromLobby(const FText& Reason)
 {
-	ShowNotificationDialog(Reason);
 	ResetSession();
+	ShowNotificationDialog(Reason);
 }
 
 void AExMenuPlayerController::ResetSession()
@@ -311,5 +310,8 @@ void AExMenuPlayerController::ResetSession()
 		SessionInterface->DestroySession(NAME_GameSession);
 	}
 
-	// TODO: reset active session in game instance
+	if (MenuWidget != nullptr)
+	{
+		MenuWidget->SetActiveTab(EExMainMenuTab::ServerBrowser);
+	}
 }

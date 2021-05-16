@@ -10,8 +10,6 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-#define LOCTEXT_NAMESPACE "LobbyPlayerEntry"
-
 UExLobbyPlayerEntry::UExLobbyPlayerEntry(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {}
@@ -29,7 +27,6 @@ void UExLobbyPlayerEntry::NativeOnInitialized()
 	if (KickButton != nullptr)
 	{
 		KickButton->OnClicked.AddDynamic(this, &ThisClass::OnKickButtonClicked);
-		KickButton->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	Super::NativeOnInitialized();
 }
@@ -39,31 +36,40 @@ void UExLobbyPlayerEntry::NativeOnListItemObjectSet(UObject* ListItemObject)
 	UExLobbyPlayerEntryData* EntryData = CastChecked<UExLobbyPlayerEntryData>(ListItemObject);
 	WeakEntryData = MakeWeakObjectPtr(EntryData);
 
-	if (EntryData->Player != nullptr)
+	if (KickButton != nullptr)
+	{
+		KickButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if (const AExLobbyPlayer* Player = EntryData->Player.Get())
 	{
 		if (PlayerNameTextBlock != nullptr)
 		{
-			if (EntryData->Player->IsLocalPlayer())
+			if (Player->IsLocalPlayer())
 			{
-				PlayerNameTextBlock->SetText(LOCTEXT("PlayerNameYou", "You"));
+				PlayerNameTextBlock->SetText(NSLOCTEXT("Lobby", "PlayerNameYou", "You"));
 			}
 			else
 			{
-				PlayerNameTextBlock->SetText(FText::AsCultureInvariant(EntryData->Player->GetPlayerName()));
+				PlayerNameTextBlock->SetText(FText::AsCultureInvariant(Player->GetPlayerName()));
 			}
 		}
 
 		if (LeaderBox != nullptr)
 		{
 			LeaderBox->SetVisibility(
-				EntryData->Player->IsSessionOwner() ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+				Player->IsSessionOwner() ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 		}
 
-		if (!EntryData->Player->IsLocalPlayer())
+		if (Player->IsLocalPlayer())
 		{
 			if (LeaderBox != nullptr)
 			{
 				LeaderBox->SetVisibility(ESlateVisibility::Collapsed);
+			}
+			if (SeparatorImage != nullptr)
+			{
+				SeparatorImage->SetVisibility(ESlateVisibility::Collapsed);
 			}
 			if (PingTextBlock != nullptr)
 			{
@@ -80,7 +86,7 @@ void UExLobbyPlayerEntry::NativeOnListItemObjectSet(UObject* ListItemObject)
 			{
 				WeakLobbyOwner = MakeWeakObjectPtr(LobbyOwner);
 				if (LobbyOwner->IsLocalPlayer()
-					&& !EntryData->Player->IsLocalPlayer()
+					&& !Player->IsLocalPlayer()
 					&& KickButton != nullptr)
 				{
 					KickButton->SetVisibility(ESlateVisibility::Visible);
@@ -94,29 +100,32 @@ void UExLobbyPlayerEntry::NativeOnListItemObjectSet(UObject* ListItemObject)
 
 FText UExLobbyPlayerEntry::GetPingText()
 {
-	const UExLobbyPlayerEntryData* EntryData = WeakEntryData.Get();
-	if (EntryData != nullptr && EntryData->Player != nullptr)
+	if (const UExLobbyPlayerEntryData* EntryData = WeakEntryData.Get())
 	{
-		if (EntryData->Player->IsSessionHost())
+		if (const AExLobbyPlayer* Player = EntryData->Player.Get())
 		{
-			return LOCTEXT("PingHost", "Host");
-		}
+			if (Player->IsSessionHost())
+			{
+				return NSLOCTEXT("Lobby", "PingHost", "Host");
+			}
 
-		FFormatNamedArguments Args;
-		Args.Add(TEXT("Ping"), FText::AsNumber(EntryData->Player->GetPing()));
-		return FText::Format(LOCTEXT("PingFormat", "Ping {Ping}"), Args);
+			FFormatNamedArguments Args;
+			Args.Add(TEXT("Ping"), FText::AsNumber(Player->GetPing()));
+			return FText::Format(NSLOCTEXT("Lobby", "PingFormat", "Ping {Ping}"), Args);
+		}
 	}
-	return LOCTEXT("PingMax", "Ping 255");
+	return NSLOCTEXT("Lobby", "PingMax", "Ping 255");
 }
 
 FLinearColor UExLobbyPlayerEntry::GetSkinColor()
 {
-	const UExLobbyPlayerEntryData* EntryData = WeakEntryData.Get();
-	if (EntryData != nullptr
-		&& EntryData->Player != nullptr
-		&& EntryData->Player->GetCharacterSkin() != nullptr)
+	if (const UExLobbyPlayerEntryData* EntryData = WeakEntryData.Get())
 	{
-		return EntryData->Player->GetCharacterSkin()->Color;
+		const AExLobbyPlayer* Player = EntryData->Player.Get();
+		if (Player != nullptr && Player->GetCharacterSkin() != nullptr)
+		{
+			return Player->GetCharacterSkin()->Color;
+		}
 	}
 	return FLinearColor::White;
 }
@@ -126,11 +135,9 @@ void UExLobbyPlayerEntry::OnKickButtonClicked()
 	if (AExLobbyPlayer* LobbyOwner = WeakLobbyOwner.Get())
 	{
 		const UExLobbyPlayerEntryData* EntryData = WeakEntryData.Get();
-		if (EntryData != nullptr && EntryData->Player != nullptr)
+		if (EntryData != nullptr && EntryData->Player.IsValid())
 		{
-			LobbyOwner->ServerRequestKickPlayer(EntryData->Player);
+			LobbyOwner->ServerRequestKickPlayer(EntryData->Player.Get());
 		}
 	}
 }
-
-#undef LOCTEXT_NAMESPACE

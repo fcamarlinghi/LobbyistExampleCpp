@@ -16,9 +16,9 @@ public:
 
 	AExLobbyHost(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	/** Maximum number o8f players allowed in the game. */
+	/** Maximum number of players allowed in the game. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lobby Host")
-	int32 MaxPlayers = 0;
+	int32 MaxPlayers = 8;
 
 protected:
 

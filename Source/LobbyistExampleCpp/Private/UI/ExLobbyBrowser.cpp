@@ -2,13 +2,14 @@
 
 #include "UI/ExLobbyBrowser.h"
 #include "Menu/ExMenuPlayerController.h"
+#include "UI/ExDialog.h"
 #include "UI/ExLobbyBrowserEntry.h"
 
 #include "Components/Button.h"
 #include "Components/ListView.h"
+#include "Components/TextBlock.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "OnlineSubsystemUtils.h"
-#include "Components/TextBlock.h"
 
 UExLobbyBrowser::UExLobbyBrowser(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -53,12 +54,7 @@ void UExLobbyBrowser::OnRefreshButtonClicked()
 		LobbyList->ClearListItems();
 	}
 
-	if (SessionSearch.IsValid())
-	{
-		SessionInterface->CancelFindSessions();
-		SessionSearch.Reset();
-	}
-
+	CancelSessionSearch();
 	SessionSearch = MakeShared<FOnlineSessionSearch>();
 	SessionSearch->MaxSearchResults = 20;
 	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
@@ -67,7 +63,12 @@ void UExLobbyBrowser::OnRefreshButtonClicked()
 		FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSessionsComplete));
 	if (SessionInterface->FindSessions(0, SessionSearch.ToSharedRef()))
 	{
-		PlayerController->ShowWaitingDialog(NSLOCTEXT("Lobby", "LookingForGames", "Looking for games..."));
+		UExWaitingDialog* Dialog = PlayerController->ShowWaitingDialog(
+			NSLOCTEXT("Lobby", "LookingForSessions", "Looking for games..."));
+		if (Dialog != nullptr)
+		{
+			Dialog->OnCancel.AddDynamic(this, &ThisClass::CancelSessionSearch);
+		}
 	}
 	else
 	{
@@ -87,6 +88,11 @@ void UExLobbyBrowser::OnFindSessionsComplete(const bool bWasSuccessful)
 		SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(DelegateHandle_OnFindSessionsComplete);
 	}
 
+	if (AExMenuPlayerController* PlayerController = GetOwningPlayer<AExMenuPlayerController>())
+	{
+		PlayerController->CloseDialog();
+	}
+
 	if (!SessionSearch.IsValid())
 	{
 		// Search was probably canceled
@@ -95,6 +101,11 @@ void UExLobbyBrowser::OnFindSessionsComplete(const bool bWasSuccessful)
 
 	if (!bWasSuccessful)
 	{
+		if (AExMenuPlayerController* PlayerController = GetOwningPlayer<AExMenuPlayerController>())
+		{
+			PlayerController->ShowNotificationDialog(
+				NSLOCTEXT("Lobby", "SessionSearchFailed", "Failed to search for games. Please check your network connection and try again."));
+		}
 		return;
 	}
 
@@ -117,7 +128,25 @@ void UExLobbyBrowser::OnFindSessionsComplete(const bool bWasSuccessful)
 	if (NoResultsTextBlock != nullptr)
 	{
 		NoResultsTextBlock->SetVisibility(
-			SessionSearch->SearchResults.Num() > 0 ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+			SessionSearch->SearchResults.Num() > 0 ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+	}
+}
+
+void UExLobbyBrowser::CancelSessionSearch()
+{
+	if (SessionSearch.IsValid())
+	{
+		if (const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld()))
+		{
+			SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(DelegateHandle_OnFindSessionsComplete);
+			SessionInterface->CancelFindSessions();
+		}
+		SessionSearch.Reset();
+	}
+
+	if (NoResultsTextBlock != nullptr)
+	{
+		NoResultsTextBlock->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

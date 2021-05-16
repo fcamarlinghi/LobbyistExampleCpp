@@ -40,7 +40,7 @@ protected:
 
 private:
 
-	/** . */
+	/** Active session search. */
 	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 
 	// Handles
@@ -48,22 +48,26 @@ private:
 
 private:
 
-	/** . */
+	/** Called when the create lobby button is clicked. */
 	UFUNCTION()
 	void OnCreateLobbyButtonClicked();
 
-	/** . */
+	/** Called when the refresh button is clicked. */
 	UFUNCTION()
 	void OnRefreshButtonClicked();
 
-	/** . */
+	/** Called when the quit button is clicked. */
 	UFUNCTION()
 	void OnQuitButtonClicked();
 
-	/** . */
+	/** Called when a session search is complete. */
 	void OnFindSessionsComplete(bool bWasSuccessful);
 
-	/** . */
+	/** Cancels any active search for sessions. */
+	UFUNCTION()
+	void CancelSessionSearch();
+
+	/** Called when the player wants to join the specified session. */
 	void OnJoinSession(UExLobbyBrowserEntryData* EntryData);
 
 	// UUserWidget interface

@@ -30,7 +30,10 @@ void UExLobbyBrowserEntry::NativeOnListItemObjectSet(UObject* ListItemObject)
 		{
 			HostNameTextBlock->SetText(FText::AsCultureInvariant(HostName.Left(16) + TEXT("\x2026")));
 		}
-		HostNameTextBlock->SetText(FText::AsCultureInvariant(HostName));
+		else
+		{
+			HostNameTextBlock->SetText(FText::AsCultureInvariant(HostName));
+		}
 	}
 
 	if (PlayerCountTextBlock != nullptr)

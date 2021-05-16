@@ -21,6 +21,7 @@ public class LobbyistExampleCpp : ModuleRules
 			"OnlineSubsystem",
 			"OnlineSubsystemUtils",
 			"Lobbyist",
+			"SlateCore",
 			"UMG",
 		});
 	}
