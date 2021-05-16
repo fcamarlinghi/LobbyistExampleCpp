@@ -149,7 +149,10 @@ void AExMenuPlayerController::OnCreateSessionComplete(const FName SessionName, c
 			Dialog->OnCancel.AddDynamic(this, &ThisClass::ResetSession);
 		}
 
-		HostLobby();
+		if (HostLobby())
+		{
+			return;
+		}
 	}
 
 	// If we're here, an error happened
@@ -198,7 +201,10 @@ void AExMenuPlayerController::OnJoinSessionComplete(const FName SessionName, con
 			Dialog->OnCancel.AddDynamic(this, &ThisClass::ResetSession);
 		}
 
-		JoinLobby();
+		if (JoinLobby())
+		{
+			return;
+		}
 	}
 
 	// If we're here, an error happened
@@ -206,7 +212,7 @@ void AExMenuPlayerController::OnJoinSessionComplete(const FName SessionName, con
 	ResetSession();
 }
 
-void AExMenuPlayerController::HostLobby()
+bool AExMenuPlayerController::HostLobby()
 {
 	if (ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
 	{
@@ -219,12 +225,13 @@ void AExMenuPlayerController::HostLobby()
 			Client->OnNetworkFailure.AddDynamic(this, &ThisClass::OnLobbyNetworkFailure);
 			Client->OnDisconnectedFromLobby.AddDynamic(this, &ThisClass::OnDisconnectedFromLobby);
 			Client->ConnectToSession();
-			return;
+			return true;
 		}
 	}
+	return false;
 }
 
-void AExMenuPlayerController::JoinLobby()
+bool AExMenuPlayerController::JoinLobby()
 {
 	if (ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
 	{
@@ -234,9 +241,10 @@ void AExMenuPlayerController::JoinLobby()
 			Client->OnNetworkFailure.AddDynamic(this, &ThisClass::OnLobbyNetworkFailure);
 			Client->OnDisconnectedFromLobby.AddDynamic(this, &ThisClass::OnDisconnectedFromLobby);
 			Client->ConnectToSession();
-			return;
+			return true;
 		}
 	}
+	return false;
 }
 
 void AExMenuPlayerController::OnConnectedToLobby()

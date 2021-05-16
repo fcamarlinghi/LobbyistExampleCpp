@@ -79,11 +79,11 @@ protected:
 	/** Called when a join session request has completed. */
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
-	/** . */
-	void HostLobby();
+	/** Hosts a lobby. */
+	bool HostLobby();
 
-	/** . */
-	void JoinLobby();
+	/** Joins a remote lobby. */
+	bool JoinLobby();
 
 	/** Called when the connection to the lobby is first established. */
 	UFUNCTION()
