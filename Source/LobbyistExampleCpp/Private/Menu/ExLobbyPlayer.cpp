@@ -52,7 +52,7 @@ void AExLobbyPlayer::SetCharacterSkin(UExCharacterSkin* NewSkin)
 		CharacterSkin = NewSkin;
 
 		// Persist selected skin to login options
-		if (UExLocalPlayer* LocalPlayer = Cast<UExLocalPlayer>(GetLocalPlayer()))
+		if (UExLocalPlayer* LocalPlayer = GetLocalPlayer<UExLocalPlayer>())
 		{
 			if (NewSkin != nullptr)
 			{
@@ -75,7 +75,7 @@ void AExLobbyPlayer::ServerRequestKickPlayer_Implementation(AExLobbyPlayer* Play
 {
 	if (const ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
 	{
-		if (AExLobbyHost* LobbyHost = Cast<AExLobbyHost>(LobbyistSubsystem->GetLobbyHost()))
+		if (AExLobbyHost* LobbyHost = LobbyistSubsystem->GetLobbyHost<AExLobbyHost>())
 		{
 			LobbyHost->ProcessKickRequest(this, PlayerToKick);
 		}
@@ -86,7 +86,7 @@ void AExLobbyPlayer::ServerSendChatMessage_Implementation(const FString& Message
 {
 	if (const ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
 	{
-		if (AExLobbyHost* LobbyHost = Cast<AExLobbyHost>(LobbyistSubsystem->GetLobbyHost()))
+		if (AExLobbyHost* LobbyHost = LobbyistSubsystem->GetLobbyHost<AExLobbyHost>())
 		{
 			LobbyHost->ProcessChatMessage(this, Message);
 		}
@@ -97,7 +97,7 @@ void AExLobbyPlayer::ServerStartGame_Implementation()
 {
 	if (const ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
 	{
-		if (AExLobbyHost* LobbyHost = Cast<AExLobbyHost>(LobbyistSubsystem->GetLobbyHost()))
+		if (AExLobbyHost* LobbyHost = LobbyistSubsystem->GetLobbyHost<AExLobbyHost>())
 		{
 			LobbyHost->ProcessStartGameRequest(this);
 		}
