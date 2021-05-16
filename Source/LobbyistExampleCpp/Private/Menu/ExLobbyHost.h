@@ -40,6 +40,7 @@ public:
 protected:
 	FLobbyistLoginResult ApproveLogin_Implementation(const FUniqueNetIdRepl& InUniqueId, const FString& InOptions) override;
 	bool InitNewPlayer(ALobbyistPlayer* NewPlayer, const FString& InOptions) override;
+	void PostLogin(ALobbyistPlayer* NewPlayer) override;
 	void Logout(ALobbyistPlayer* ExitingPlayer) override;
 	void TravelToGame() override;
 };

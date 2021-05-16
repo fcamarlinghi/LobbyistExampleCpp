@@ -113,6 +113,13 @@ bool AExLobbyHost::InitNewPlayer(ALobbyistPlayer* NewPlayer, const FString& InOp
 		}
 	}
 
+	return true;
+}
+
+void AExLobbyHost::PostLogin(ALobbyistPlayer* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
 	// Notify clients that a new player has joined the lobby
 	for (ALobbyistClient* Client : GetLobbyClients())
 	{
@@ -121,8 +128,6 @@ bool AExLobbyHost::InitNewPlayer(ALobbyistPlayer* NewPlayer, const FString& InOp
 			LobbyClient->ClientReceiveJoinMessage(NewPlayer->GetPlayerName());
 		}
 	}
-
-	return true;
 }
 
 void AExLobbyHost::Logout(ALobbyistPlayer* ExitingPlayer)
