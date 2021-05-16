@@ -17,6 +17,6 @@ public:
 	UExGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/** Available player skins. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data", Meta = (DisplayThumbnail = false))
 	TArray<TSoftObjectPtr<UExCharacterSkin>> AvailableSkins;
 };
