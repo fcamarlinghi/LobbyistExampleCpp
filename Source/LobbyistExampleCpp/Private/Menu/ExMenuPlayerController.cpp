@@ -24,10 +24,16 @@ void AExMenuPlayerController::BeginPlay()
 		SetInputMode(FInputModeUIOnly().SetWidgetToFocus(MenuWidget->GetCachedWidget()));
 	}
 
-	// If a session is active, it means we have returned to the main menu from a game
-	// Recreate the lobby accordingly
-	if (const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld()))
+	const UWorld* World = GetWorld();
+	if (World != nullptr && World->URL.HasOption(TEXT("closed")))
 	{
+		// We got back to the main menu after being disconnected
+		ResetSession();
+	}
+	else if (const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld()))
+	{
+		// If a session is active, it means we have returned to the main menu from a game
+		// Recreate the lobby accordingly
 		const FNamedOnlineSession* NamedSession = SessionInterface->GetNamedSession(NAME_GameSession);
 		if (NamedSession != nullptr && NamedSession->SessionState != EOnlineSessionState::Destroying)
 		{
