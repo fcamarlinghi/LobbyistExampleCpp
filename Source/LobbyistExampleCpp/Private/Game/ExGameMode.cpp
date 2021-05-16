@@ -22,11 +22,19 @@ AExGameMode::AExGameMode(const FObjectInitializer& ObjectInitializer)
 
 void AExGameMode::ReturnToLobby()
 {
+	if (bReturningToLobby)
+	{
+		return;
+	}
+
 	if (const UWorld* World = GetWorld())
 	{
+		bReturningToLobby = true;
+
 		for (auto It = World->GetPlayerControllerIterator(); It; ++It)
 		{
-			if (AExPlayerController* PlayerController = Cast<AExPlayerController>(*It))
+			AExPlayerController* PlayerController = Cast<AExPlayerController>(*It);
+			if (PlayerController != nullptr && !PlayerController->IsLocalController())
 			{
 				PlayerController->ClientTravel(TEXT("/Game/Maps/Menu"), ETravelType::TRAVEL_Absolute);
 			}

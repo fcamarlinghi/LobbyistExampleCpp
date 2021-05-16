@@ -16,6 +16,9 @@ public:
 
 protected:
 
+	/** Whether the game is waiting to return to the lobby. */
+	bool bReturningToLobby = false;
+
 	// Handles
 	FTimerHandle TimerHandle_ReturnToLobbyHost;
 
