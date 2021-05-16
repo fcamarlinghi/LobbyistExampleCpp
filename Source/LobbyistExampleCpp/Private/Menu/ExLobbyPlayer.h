@@ -18,8 +18,8 @@ public:
 protected:
 
 	/** Character skin selected by the player. */
-	UPROPERTY(Transient, Replicated)
-	UExCharacterSkin* CharacterSkin;
+	UPROPERTY(Transient, Replicated, ReplicatedUsing = OnCharacterSkinChanged)
+	UExCharacterSkin* CharacterSkin = nullptr;
 
 	/** Exact ping in ms (available on authority and owner client). */
 	float ExactPing = 0.0f;
@@ -65,6 +65,10 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerSetCharacterSkin(UExCharacterSkin* NewSkin);
 	virtual void ServerSetCharacterSkin_Implementation(UExCharacterSkin* NewSkin);
+
+	/** Called when the character skin changes. */
+	UFUNCTION()
+	void OnCharacterSkinChanged();
 
 	/** Requests a ping update from the server and schedules the next update. */
 	void RequestPingUpdate();

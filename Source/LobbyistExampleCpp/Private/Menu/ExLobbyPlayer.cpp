@@ -47,26 +47,35 @@ int32 AExLobbyPlayer::GetPing() const
 
 void AExLobbyPlayer::SetCharacterSkin(UExCharacterSkin* NewSkin)
 {
-	if (HasAuthority() || IsLocalPlayer())
+	if ((HasAuthority() || IsLocalPlayer()) && NewSkin != CharacterSkin)
 	{
 		CharacterSkin = NewSkin;
-
-		// Persist selected skin to login options
-		if (UExLocalPlayer* LocalPlayer = GetLocalPlayer<UExLocalPlayer>())
-		{
-			if (NewSkin != nullptr)
-			{
-				LocalPlayer->GameLoginOptions.Add(TEXT("CharacterSkin"), NewSkin->GetPathName());
-			}
-			else
-			{
-				LocalPlayer->GameLoginOptions.Remove(TEXT("CharacterSkin"));
-			}
-		}
+		OnCharacterSkinChanged();
 
 		if (!HasAuthority())
 		{
 			ServerSetCharacterSkin(NewSkin);
+		}
+	}
+}
+
+void AExLobbyPlayer::ServerSetCharacterSkin_Implementation(UExCharacterSkin* NewSkin)
+{
+	SetCharacterSkin(NewSkin);
+}
+
+void AExLobbyPlayer::OnCharacterSkinChanged()
+{
+	// Persist selected skin to login options
+	if (UExLocalPlayer* LocalPlayer = GetLocalPlayer<UExLocalPlayer>())
+	{
+		if (CharacterSkin != nullptr)
+		{
+			LocalPlayer->GameLoginOptions.Add(TEXT("CharacterSkin"), CharacterSkin->GetPathName());
+		}
+		else
+		{
+			LocalPlayer->GameLoginOptions.Remove(TEXT("CharacterSkin"));
 		}
 	}
 }
@@ -102,11 +111,6 @@ void AExLobbyPlayer::ServerStartGame_Implementation()
 			LobbyHost->ProcessStartGameRequest(this);
 		}
 	}
-}
-
-void AExLobbyPlayer::ServerSetCharacterSkin_Implementation(UExCharacterSkin* NewSkin)
-{
-	SetCharacterSkin(NewSkin);
 }
 
 void AExLobbyPlayer::RequestPingUpdate()
