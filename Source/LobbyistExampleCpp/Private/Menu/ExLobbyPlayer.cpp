@@ -33,18 +33,6 @@ void AExLobbyPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME_CONDITION(ThisClass, Ping, COND_SkipOwner);
 }
 
-int32 AExLobbyPlayer::GetPing() const
-{
-	if (HasAuthority() || IsLocalPlayer())
-	{
-		// Use exact ping on owner client and authority
-		return FMath::TruncToInt(ExactPing);
-	}
-
-	// Use approximated replicated ping on remote clients
-	return static_cast<int32>(Ping) * 4;
-}
-
 void AExLobbyPlayer::SetCharacterSkin(UExCharacterSkin* NewSkin)
 {
 	if ((HasAuthority() || IsLocalPlayer()) && NewSkin != CharacterSkin)
@@ -126,14 +114,23 @@ void AExLobbyPlayer::RequestPingUpdate()
 
 void AExLobbyPlayer::ServerPingRequest_Implementation(const float TimeStamp)
 {
-	ClientPingResponse(TimeStamp);
+	if (TimeStamp > LastPingTimeStamp)
+	{
+		ClientPingResponse(TimeStamp);
+	}
 }
 
 void AExLobbyPlayer::ClientPingResponse_Implementation(const float TimeStamp)
 {
 	if (const UWorld* World = GetWorld())
 	{
-		UpdatePing(World->GetRealTimeSeconds() - TimeStamp);
+		if (TimeStamp > LastPingTimeStamp)
+		{
+			const float ElapsedTime = World->GetRealTimeSeconds() - TimeStamp;
+			UpdatePing(ElapsedTime);
+			ServerUpdatePing(TimeStamp, ElapsedTime);
+			LastPingTimeStamp = TimeStamp;
+		}
 	}
 }
 
@@ -144,14 +141,18 @@ void AExLobbyPlayer::UpdatePing(const float ElapsedTime)
 
 	// Replicate ping as uint8 to save bandwidth
 	Ping = FMath::Min(FMath::TruncToInt(ExactPing * 0.25f), 255);
+}
 
-	if (!HasAuthority())
+void AExLobbyPlayer::ServerUpdatePing_Implementation(const float TimeStamp, const float ElapsedTime)
+{
+	if (TimeStamp > LastPingTimeStamp)
 	{
-		ServerUpdatePing(ElapsedTime);
+		UpdatePing(ElapsedTime);
+		LastPingTimeStamp = TimeStamp;
 	}
 }
 
-void AExLobbyPlayer::ServerUpdatePing_Implementation(const float ElapsedTime)
+void AExLobbyPlayer::OnRep_Ping()
 {
-	UpdatePing(ElapsedTime);
+	ExactPing = static_cast<float>(Ping) * 4.0f;
 }

@@ -6,6 +6,7 @@
 #include "ExLobbyPlayer.generated.h"
 
 class UExCharacterSkin;
+
 UCLASS()
 class AExLobbyPlayer : public ALobbyistPlayer
 {
@@ -18,14 +19,17 @@ public:
 protected:
 
 	/** Character skin selected by the player. */
-	UPROPERTY(Transient, Replicated, ReplicatedUsing = OnCharacterSkinChanged)
+	UPROPERTY(Replicated, ReplicatedUsing = OnCharacterSkinChanged)
 	UExCharacterSkin* CharacterSkin = nullptr;
+
+	/** Time stamp at which ping was last updated. */
+	float LastPingTimeStamp = 0.0f;
 
 	/** Exact ping in ms (available on authority and owner client). */
 	float ExactPing = 0.0f;
 
 	/** Replicated ping in ms, divided by 4. */
-	UPROPERTY(Transient, Replicated)
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Ping)
 	uint8 Ping = 0;
 
 	// Handles
@@ -73,11 +77,11 @@ protected:
 	/** Requests a ping update from the server and schedules the next update. */
 	void RequestPingUpdate();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Unreliable)
 	void ServerPingRequest(float TimeStamp);
 	virtual void ServerPingRequest_Implementation(float TimeStamp);
 
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Client, Unreliable)
 	void ClientPingResponse(float TimeStamp);
 	virtual void ClientPingResponse_Implementation(float TimeStamp);
 
@@ -85,8 +89,12 @@ protected:
 	void UpdatePing(float ElapsedTime);
 
 	UFUNCTION(Server, Reliable)
-	void ServerUpdatePing(float ElapsedTime);
-	virtual void ServerUpdatePing_Implementation(float ElapsedTime);
+	void ServerUpdatePing(float TimeStamp, float ElapsedTime);
+	virtual void ServerUpdatePing_Implementation(float TimeStamp, float ElapsedTime);
+
+	/** Called when the approximated ping is replicated to remote, non-owning clients. */
+	UFUNCTION()
+	void OnRep_Ping();
 
 	// AActor interface
 protected:
@@ -97,3 +105,4 @@ public:
 
 // AExLobbyPlayer inlines
 inline UExCharacterSkin* AExLobbyPlayer::GetCharacterSkin() const { return CharacterSkin; }
+inline int32 AExLobbyPlayer::GetPing() const { return FMath::TruncToInt(ExactPing); }
