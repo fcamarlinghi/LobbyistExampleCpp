@@ -19,7 +19,7 @@ void AExLobbyPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	// Kickstart ping calculation on remote clients
-	if (IsNetMode(ENetMode::NM_Client))
+	if (IsNetMode(ENetMode::NM_Client) && IsLocalPlayer())
 	{
 		RequestPingUpdate();
 	}
