@@ -55,25 +55,28 @@ void UExLobbyPlayerEntry::NativeOnListItemObjectSet(UObject* ListItemObject)
 			}
 		}
 
-		if (LeaderBox != nullptr)
+		if (LeaderBox != nullptr && SeparatorImage != nullptr && PingTextBlock != nullptr)
 		{
-			LeaderBox->SetVisibility(
-				Player->IsSessionOwner() ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-		}
-
-		if (Player->IsLocalPlayer())
-		{
-			if (LeaderBox != nullptr)
+			if (Player->IsLocalPlayer())
 			{
 				LeaderBox->SetVisibility(ESlateVisibility::Collapsed);
-			}
-			if (SeparatorImage != nullptr)
-			{
 				SeparatorImage->SetVisibility(ESlateVisibility::Collapsed);
-			}
-			if (PingTextBlock != nullptr)
-			{
 				PingTextBlock->SetVisibility(ESlateVisibility::Collapsed);
+			}
+			else
+			{
+				if (Player->IsSessionOwner())
+				{
+					LeaderBox->SetVisibility(ESlateVisibility::Visible);
+					SeparatorImage->SetVisibility(ESlateVisibility::Visible);
+				}
+				else
+				{
+					LeaderBox->SetVisibility(ESlateVisibility::Collapsed);
+					SeparatorImage->SetVisibility(ESlateVisibility::Collapsed);
+				}
+
+				PingTextBlock->SetVisibility(ESlateVisibility::Visible);
 			}
 		}
 
