@@ -57,13 +57,9 @@ private:
 	TWeakObjectPtr<AExLobbyPlayer> WeakLocalPlayer;
 
 	// Handles
-	FTimerHandle TimerHandle_Setup;
 	FTimerHandle TimerHandle_UpdatePlayers;
 
 private:
-
-	/** Setups the widget. */
-	void Setup();
 
 	/** Schedules a players update for next tick. */
 	void ScheduleUpdatePlayers();

@@ -85,9 +85,9 @@ protected:
 	/** Joins a remote lobby. */
 	bool JoinLobby();
 
-	/** Called when the connection to the lobby is first established. */
+	/** Called when the lobby has been joined successfully. */
 	UFUNCTION()
-	void OnConnectedToLobby();
+	void OnJoinedLobby();
 
 	/** Called after disconnecting from the lobby because of a network error. */
 	UFUNCTION()

@@ -1,6 +1,8 @@
 ﻿// Copyright Francesco Camarlinghi. All rights reserved.
 
 #include "UI/ExLobby.h"
+
+#include "LobbyistSettings.h"
 #include "Menu/ExLobbyHost.h"
 #include "Menu/ExLobbyPlayer.h"
 #include "Menu/ExMenuPlayerController.h"
@@ -35,16 +37,24 @@ void UExLobby::NativeOnInitialized()
 
 void UExLobby::Activated_Implementation()
 {
-	Setup();
+	if (const ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
+	{
+		if (ALobbyistState* LobbyState = LobbyistSubsystem->GetLobbyState())
+		{
+			WeakLobbyState = MakeWeakObjectPtr(LobbyState);
+			LobbyState->OnPlayerAdded.AddDynamic(this, &ThisClass::OnPlayerAdded);
+			LobbyState->OnPlayerRemoved.AddDynamic(this, &ThisClass::OnPlayerRemoved);
+		}
+	}
+
+	UpdatePlayers();
 }
 
 void UExLobby::Deactivated_Implementation()
 {
 	if (const UWorld* World = GetWorld())
 	{
-		FTimerManager& TimerManager = World->GetTimerManager();
-		TimerManager.ClearTimer(TimerHandle_Setup);
-		TimerManager.ClearTimer(TimerHandle_UpdatePlayers);
+		World->GetTimerManager().ClearTimer(TimerHandle_UpdatePlayers);
 	}
 
 	if (PlayerList != nullptr)
@@ -69,32 +79,6 @@ void UExLobby::Deactivated_Implementation()
 
 	WeakLobbyState.Reset();
 	WeakLocalPlayer.Reset();
-}
-
-void UExLobby::Setup()
-{
-	if (const ULobbyistSubsystem* LobbyistSubsystem = ULobbyistSubsystem::Get(GetWorld()))
-	{
-		if (ALobbyistState* LobbyState = LobbyistSubsystem->GetLobbyState())
-		{
-			WeakLobbyState = MakeWeakObjectPtr(LobbyState);
-			LobbyState->OnPlayerAdded.AddDynamic(this, &ThisClass::OnPlayerAdded);
-			LobbyState->OnPlayerRemoved.AddDynamic(this, &ThisClass::OnPlayerRemoved);
-		}
-	}
-
-	if (WeakLobbyState.IsValid())
-	{
-		UpdatePlayers();
-	}
-	else
-	{
-		// Wait for LobbyState to be replicated...
-		if (const UWorld* World = GetWorld())
-		{
-			World->GetTimerManager().SetTimer(TimerHandle_Setup, this, &UExLobby::Setup, 0.1f);
-		}
-	}
 }
 
 void UExLobby::OnPlayerAdded(ALobbyistPlayer* Player)

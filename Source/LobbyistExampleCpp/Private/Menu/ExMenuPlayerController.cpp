@@ -227,7 +227,7 @@ bool AExMenuPlayerController::HostLobby()
 		if (Host != nullptr && Client != nullptr)
 		{
 			// Immediately join the new lobby
-			Client->OnConnectedToLobby.AddDynamic(this, &ThisClass::OnConnectedToLobby);
+			Client->OnConnectedToLobby.AddDynamic(this, &ThisClass::OnJoinedLobby);
 			Client->OnNetworkFailure.AddDynamic(this, &ThisClass::OnLobbyNetworkFailure);
 			Client->OnDisconnectedFromLobby.AddDynamic(this, &ThisClass::OnDisconnectedFromLobby);
 			Client->ConnectToSession();
@@ -243,7 +243,7 @@ bool AExMenuPlayerController::JoinLobby()
 	{
 		if (ALobbyistClient* Client = LobbyistSubsystem->CreateLobbyClient())
 		{
-			Client->OnConnectedToLobby.AddDynamic(this, &ThisClass::OnConnectedToLobby);
+			Client->OnJoinedLobby.AddDynamic(this, &ThisClass::OnJoinedLobby);
 			Client->OnNetworkFailure.AddDynamic(this, &ThisClass::OnLobbyNetworkFailure);
 			Client->OnDisconnectedFromLobby.AddDynamic(this, &ThisClass::OnDisconnectedFromLobby);
 			Client->ConnectToSession();
@@ -253,7 +253,7 @@ bool AExMenuPlayerController::JoinLobby()
 	return false;
 }
 
-void AExMenuPlayerController::OnConnectedToLobby()
+void AExMenuPlayerController::OnJoinedLobby()
 {
 	CloseDialog();
 	if (MenuWidget != nullptr)
