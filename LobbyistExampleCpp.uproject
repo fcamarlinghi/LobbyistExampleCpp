@@ -17,6 +17,10 @@
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/54c6cdf0d05b4c95926f95a67bd8bebe"
 		},
 		{
+			"Name": "OnlineSubsystem",
+			"Enabled": true
+		},
+		{
 			"Name": "OnlineSubsystemSteam",
 			"Enabled": true
 		},
