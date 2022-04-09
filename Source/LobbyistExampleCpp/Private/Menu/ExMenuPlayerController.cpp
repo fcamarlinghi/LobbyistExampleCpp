@@ -104,7 +104,7 @@ void AExMenuPlayerController::HostSession()
 	ResetSession();
 
 	// Create a new online session
-	const FUniqueNetIdRepl PrimaryPlayerId = GetGameInstance()->GetPrimaryPlayerUniqueId();
+	const FUniqueNetIdRepl PrimaryPlayerId = GetGameInstance()->GetPrimaryPlayerUniqueIdRepl();
 	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
 	if (!PrimaryPlayerId.IsValid() || !SessionInterface.IsValid())
 	{
@@ -123,6 +123,7 @@ void AExMenuPlayerController::HostSession()
 	SessionSettings.bIsLANMatch = false;
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.bAllowJoinViaPresence = true;
+	SessionSettings.bUseLobbiesIfAvailable = true;
 
 	DelegateHandle_OnCreateSessionComplete = SessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
 		FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete));
