@@ -123,6 +123,7 @@ void AExMenuPlayerController::HostSession()
 	SessionSettings.bIsLANMatch = false;
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.bAllowJoinViaPresence = true;
+	SessionSettings.bUseLobbiesIfAvailable = true;
 
 	DelegateHandle_OnCreateSessionComplete = SessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
 		FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete));
