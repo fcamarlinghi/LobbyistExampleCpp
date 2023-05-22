@@ -9,6 +9,7 @@
 #include "Components/ListView.h"
 #include "Components/TextBlock.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystemUtils.h"
 
 UExLobbyBrowser::UExLobbyBrowser(const FObjectInitializer& ObjectInitializer)

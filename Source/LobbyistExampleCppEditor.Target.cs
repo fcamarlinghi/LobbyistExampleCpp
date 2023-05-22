@@ -9,6 +9,7 @@ public class LobbyistExampleCppEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange(new[] {"LobbyistExampleCpp"});
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+		ExtraModuleNames.AddRange(new[] { "LobbyistExampleCpp" });
 	}
 }
