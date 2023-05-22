@@ -9,7 +9,7 @@
 UExInGameMenu::UExInGameMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bIsFocusable = true;
+	SetIsFocusable(true);
 }
 
 void UExInGameMenu::NativeOnInitialized()

@@ -9,7 +9,7 @@
 UExWaitingDialog::UExWaitingDialog(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bIsFocusable = true;
+	SetIsFocusable(true);
 }
 
 void UExWaitingDialog::NativeOnInitialized()
@@ -48,7 +48,7 @@ void UExWaitingDialog::OnCancelButtonClicked()
 UExNotificationDialog::UExNotificationDialog(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bIsFocusable = true;
+	SetIsFocusable(true);
 }
 
 void UExNotificationDialog::NativeOnInitialized()

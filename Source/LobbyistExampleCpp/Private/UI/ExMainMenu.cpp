@@ -8,7 +8,7 @@
 UExMainMenu::UExMainMenu(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bIsFocusable = true;
+	SetIsFocusable(true);
 }
 
 void UExMainMenu::SetActiveTab(const EExMainMenuTab NewTab)
