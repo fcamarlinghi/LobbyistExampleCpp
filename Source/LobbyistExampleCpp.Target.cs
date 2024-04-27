@@ -8,7 +8,7 @@ public class LobbyistExampleCppTarget : TargetRules
 		: base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V4;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		ExtraModuleNames.AddRange(new[] { "LobbyistExampleCpp" });
 	}
