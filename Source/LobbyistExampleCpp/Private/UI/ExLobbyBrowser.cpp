@@ -58,7 +58,7 @@ void UExLobbyBrowser::OnRefreshButtonClicked()
 	CancelSessionSearch();
 	SessionSearch = MakeShared<FOnlineSessionSearch>();
 	SessionSearch->MaxSearchResults = 20;
-	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+	SessionSearch->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 
 	DelegateHandle_OnFindSessionsComplete = SessionInterface->AddOnFindSessionsCompleteDelegate_Handle(
 		FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSessionsComplete));
