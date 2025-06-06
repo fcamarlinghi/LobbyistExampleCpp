@@ -8,7 +8,6 @@ public class LobbyistExampleCpp : ModuleRules
 		: base(Target)
 	{
 		bLegacyPublicIncludePaths = false;
-		ShadowVariableWarningLevel = WarningLevel.Error;
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PrivateIncludePaths.Add("LobbyistExampleCpp/Private");
